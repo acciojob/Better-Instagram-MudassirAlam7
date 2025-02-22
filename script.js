@@ -1,29 +1,31 @@
-let imageList = document.getElementsByClassName('image');
+let imageList = document.querySelectorAll('.image');
 let firstElement = null;
 
-for (let list of imageList) {
-    list.setAttribute('draggable', 'true');
+imageList.forEach((image) => {
+    image.setAttribute('draggable', 'true');
 
-    list.addEventListener('dragstart', function (e) {
+    image.addEventListener('dragstart', function (e) {
         firstElement = e.target;
-        e.dataTransfer.setData('text/plain', ''); // Required for some browsers
+        e.dataTransfer.setData('text/plain', ''); // Fix for some browsers
     });
 
-    list.addEventListener('dragover', function (e) {
-        e.preventDefault(); // Allow dropping
+    image.addEventListener('dragover', function (e) {
+        e.preventDefault(); // Necessary to allow drop
     });
 
-    list.addEventListener('drop', function (e) {
+    image.addEventListener('drop', function (e) {
         e.preventDefault();
         let secondElement = e.target;
 
         if (firstElement && firstElement !== secondElement) {
-            // Swap inner HTML instead of background images
-            let tempHTML = firstElement.innerHTML;
-            firstElement.innerHTML = secondElement.innerHTML;
-            secondElement.innerHTML = tempHTML;
+            let parent = firstElement.parentNode;
+            let nextSibling = secondElement.nextSibling === firstElement ? secondElement : secondElement.nextSibling;
+
+            // Swap elements in the DOM
+            parent.insertBefore(firstElement, secondElement);
+            parent.insertBefore(secondElement, nextSibling);
         }
 
-        firstElement = null; // Reset first element after drop
+        firstElement = null; // Reset for next drag-and-drop
     });
-}
+});
