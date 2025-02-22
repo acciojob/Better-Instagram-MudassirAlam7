@@ -1,24 +1,29 @@
-//your code here
-let imageList = document.getElementsByClassName('image')
-let firstElement = null
-for(let list of imageList){
-	list.setAttribute('draggable', 'true')
-	list.addEventListener('dragstart', function (e) {
-		firstElement = e.target
-	})
-	list.addEventListener('dragover', function (e) {
-		e.preventDefault()	
-	})
-	list.addEventListener('drop', function(e){
-		e.preventDefault()
-		let secondElement = e.target
-		if(firstElement && firstElement!==secondElement){
-			let firstBg = window.getComputedStyle(firstElement).backgroundImage
-			let secondBg = window.getComputedStyle(secondElement).backgroundImage
+let imageList = document.getElementsByClassName('image');
+let firstElement = null;
 
-			firstElement.style.backgroundImage = secondBg
-			secondElement.style.backgroundImage = firstBg
-		}
-		firstElement = null
-	})
+for (let list of imageList) {
+    list.setAttribute('draggable', 'true');
+
+    list.addEventListener('dragstart', function (e) {
+        firstElement = e.target;
+        e.dataTransfer.setData('text/plain', ''); // Required for some browsers
+    });
+
+    list.addEventListener('dragover', function (e) {
+        e.preventDefault(); // Allow dropping
+    });
+
+    list.addEventListener('drop', function (e) {
+        e.preventDefault();
+        let secondElement = e.target;
+
+        if (firstElement && firstElement !== secondElement) {
+            // Swap inner HTML instead of background images
+            let tempHTML = firstElement.innerHTML;
+            firstElement.innerHTML = secondElement.innerHTML;
+            secondElement.innerHTML = tempHTML;
+        }
+
+        firstElement = null; // Reset first element after drop
+    });
 }
