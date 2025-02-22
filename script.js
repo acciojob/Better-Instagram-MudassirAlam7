@@ -2,6 +2,7 @@
 let imageList = document.getElementsByClassName('image')
 let firstElement = null
 for(let list of imageList){
+	list.setAttribute('draggable', 'true')
 	list.addEventListener('dragstart', function (e) {
 		firstElement = e.target
 	})
